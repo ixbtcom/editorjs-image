@@ -29,6 +29,12 @@ export default class Ui {
       caption: make('div', [this.CSS.input, this.CSS.caption], {
         contentEditable: !this.readOnly,
       }),
+      link: make('div', [this.CSS.input, this.CSS.caption], {
+        contentEditable: !this.readOnly,
+      }),
+      alt: make('div', [this.CSS.input, this.CSS.caption], {
+        contentEditable: !this.readOnly,
+      }),
     };
 
     /**
@@ -41,10 +47,15 @@ export default class Ui {
      *    <select-file-button />
      *  </wrapper>
      */
+
     this.nodes.caption.dataset.placeholder = this.config.captionPlaceholder;
+    this.nodes.link.dataset.placeholder = this.config.linkPlaceholder;
+    this.nodes.alt.dataset.placeholder = this.config.altPlaceholder;
     this.nodes.imageContainer.appendChild(this.nodes.imagePreloader);
     this.nodes.wrapper.appendChild(this.nodes.imageContainer);
     this.nodes.wrapper.appendChild(this.nodes.caption);
+    this.nodes.wrapper.appendChild(this.nodes.link);
+    this.nodes.wrapper.appendChild(this.nodes.alt);
     this.nodes.wrapper.appendChild(this.nodes.fileButton);
   }
 
@@ -226,6 +237,30 @@ export default class Ui {
   }
 
   /**
+   * Shows link input
+   *
+   * @param {string} text - link text
+   * @returns {void}
+   */
+  fillLink(text) {
+    if (this.nodes.link) {
+      this.nodes.link.innerHTML = text;
+    }
+  }
+
+  /**
+   * Shows alt input
+   *
+   * @param {string} text - alt text
+   * @returns {void}
+   */
+  fillAlt(text) {
+    if (this.nodes.alt) {
+      this.nodes.alt.innerHTML = text;
+    }
+  }
+
+  /**
    * Changes UI status
    *
    * @param {string} status - see {@link Ui.status} constants
@@ -250,4 +285,3 @@ export default class Ui {
     this.nodes.wrapper.classList.toggle(`${this.CSS.wrapper}--${tuneName}`, status);
   }
 }
-
