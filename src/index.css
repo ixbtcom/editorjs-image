@@ -43,7 +43,8 @@
     }
   }
 
-  &__caption {
+  &__caption,&__link {
+   margin-bottom: 12px;
     &[contentEditable="true"][data-placeholder]::before {
       position: absolute !important;
       content: attr(data-placeholder);
