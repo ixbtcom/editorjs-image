@@ -3,7 +3,7 @@
  *
  * @author CodeX <team@codex.so>
  * @license MIT
- * @see {@link https://github.com/editor-js/image}
+ * @see {@link https://github.com/ixbtcom/editorjs-image}
  *
  * To developers.
  * To simplify Tool structure, we split it to 4 parts:
@@ -34,6 +34,8 @@
  * @typedef {object} ImageToolData
  * @description Image Tool's input and output data format
  * @property {string} caption — image caption
+ * @property {string} alt — image alt
+ * @property {string} link — image link
  * @property {boolean} withBorder - should image be rendered with border
  * @property {boolean} withBackground - should image be rendered with background
  * @property {boolean} stretched - should image be stretched to full width of container
