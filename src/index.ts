@@ -230,8 +230,9 @@ export default class ImageTool implements BlockTool {
    */
   save(): ImageToolData {
     const caption = this.ui.nodes.caption;
-    const link = this.ui.nodes.link;
     const alt = this.ui.nodes.alt;
+    const link = this.ui.nodes.link;
+
 
     this._data.caption = caption.innerHTML;
     this._data.alt = alt.innerHTML;
@@ -371,8 +372,9 @@ export default class ImageTool implements BlockTool {
     this.image = data.file;
 
     this._data.caption = data.caption || '';
-    this._data.link = data.link || '';
     this._data.alt = data.alt || '';
+    this._data.link = data.link || '';
+
     this.ui.fillCaption(this._data.caption);
     this.ui.fillAlt(this._data.alt);
     this.ui.fillLink(this._data.link);

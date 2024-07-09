@@ -968,8 +968,8 @@ class P {
    * @returns {ImageToolData}
    */
   save() {
-    const i = this.ui.nodes.caption, o = this.ui.nodes.link, l = this.ui.nodes.alt;
-    return this._data.caption = i.innerHTML, this._data.alt = l.innerHTML, this._data.link = o.innerHTML, this.data;
+    const i = this.ui.nodes.caption, o = this.ui.nodes.alt, l = this.ui.nodes.link;
+    return this._data.caption = i.innerHTML, this._data.alt = o.innerHTML, this._data.link = l.innerHTML, this.data;
   }
   /**
    * Returns configuration for block tunes: add background, add border, stretch image
@@ -1078,7 +1078,7 @@ class P {
    * @param {ImageToolData} data - data in Image Tool format
    */
   set data(i) {
-    this.image = i.file, this._data.caption = i.caption || "", this._data.link = i.link || "", this._data.alt = i.alt || "", this.ui.fillCaption(this._data.caption), this.ui.fillAlt(this._data.alt), this.ui.fillLink(this._data.link), P.tunes.forEach(({ name: o }) => {
+    this.image = i.file, this._data.caption = i.caption || "", this._data.alt = i.alt || "", this._data.link = i.link || "", this.ui.fillCaption(this._data.caption), this.ui.fillAlt(this._data.alt), this.ui.fillLink(this._data.link), P.tunes.forEach(({ name: o }) => {
       const l = typeof i[o] < "u" ? i[o] === !0 || i[o] === "true" : !1;
       this.setTune(o, l);
     });
