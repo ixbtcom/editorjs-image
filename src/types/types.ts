@@ -67,6 +67,16 @@ export type ImageToolData<Actions = {}, AdditionalFileData = {}> = {
   caption: string;
 
   /**
+   * Link for the image.
+   */
+  link: string;
+
+  /**
+   * Alt for the image.
+   */
+  alt: string;
+
+  /**
    * Flag indicating whether the image has a border.
    */
   withBorder: boolean;
@@ -75,6 +85,8 @@ export type ImageToolData<Actions = {}, AdditionalFileData = {}> = {
    * Flag indicating whether the image has a background.
    */
   withBackground: boolean;
+
+
 
   /**
    * Flag indicating whether the image is stretched.
@@ -128,6 +140,18 @@ export interface ImageConfig {
    * Placeholder text for the caption field.
    */
   captionPlaceholder?: string;
+
+  /**
+   * Placeholder text for the link field
+   */
+
+  linkPlaceholder?: string;
+
+  /**
+   * Placeholder text for the alt field
+   */
+
+  altPlaceholder?: string;
 
   /**
    * Additional data to send with requests.

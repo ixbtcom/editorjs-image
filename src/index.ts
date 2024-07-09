@@ -137,6 +137,8 @@ export default class ImageTool implements BlockTool {
      */
     this._data = {
       caption: '',
+      alt: '',
+      link: '',
       withBorder: false,
       withBackground: false,
       stretched: false,

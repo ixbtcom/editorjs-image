@@ -56,6 +56,18 @@ interface Nodes {
    * Caption element for the image.
    */
   caption: HTMLElement;
+
+  /**
+   * Link element for the image
+   */
+
+  link: HTMLElement;
+
+  /**
+   * Alt element for the image
+   */
+
+  alt: HTMLElement;
 }
 
 /**
@@ -328,7 +340,7 @@ public nodes: Nodes;
    * @param {string} text - link text
    * @returns {void}
    */
-  fillLink(text) {
+  fillLink(text: string):void {
     if (this.nodes.link) {
       this.nodes.link.innerHTML = text;
     }
@@ -340,7 +352,7 @@ public nodes: Nodes;
    * @param {string} text - alt text
    * @returns {void}
    */
-  fillAlt(text) {
+  fillAlt(text: string):void {
     if (this.nodes.alt) {
       this.nodes.alt.innerHTML = text;
     }
