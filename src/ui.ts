@@ -56,6 +56,18 @@ interface Nodes {
    * Caption element for the image.
    */
   caption: HTMLElement;
+
+  /**
+   * Link element for the image
+   */
+
+  link: HTMLElement;
+
+  /**
+   * Alt element for the image
+   */
+
+  alt: HTMLElement;
 }
 
 /**
@@ -132,12 +144,13 @@ public nodes: Nodes;
       caption: make('div', [this.CSS.input, this.CSS.caption], {
         contentEditable: !this.readOnly,
       }),
-      link: make('div', [this.CSS.input, this.CSS.caption], {
-        contentEditable: !this.readOnly,
-      }),
       alt: make('div', [this.CSS.input, this.CSS.caption], {
         contentEditable: !this.readOnly,
       }),
+      link: make('div', [this.CSS.input, this.CSS.caption], {
+        contentEditable: !this.readOnly,
+      }),
+
     };
 
     /**
@@ -152,13 +165,13 @@ public nodes: Nodes;
      */
 
     this.nodes.caption.dataset.placeholder = this.config.captionPlaceholder;
-    this.nodes.link.dataset.placeholder = this.config.linkPlaceholder;
     this.nodes.alt.dataset.placeholder = this.config.altPlaceholder;
+    this.nodes.link.dataset.placeholder = this.config.linkPlaceholder;
     this.nodes.imageContainer.appendChild(this.nodes.imagePreloader);
     this.nodes.wrapper.appendChild(this.nodes.imageContainer);
     this.nodes.wrapper.appendChild(this.nodes.caption);
-    this.nodes.wrapper.appendChild(this.nodes.link);
     this.nodes.wrapper.appendChild(this.nodes.alt);
+    this.nodes.wrapper.appendChild(this.nodes.link);
     this.nodes.wrapper.appendChild(this.nodes.fileButton);
   }
 
@@ -328,7 +341,7 @@ public nodes: Nodes;
    * @param {string} text - link text
    * @returns {void}
    */
-  fillLink(text) {
+  fillLink(text: string):void {
     if (this.nodes.link) {
       this.nodes.link.innerHTML = text;
     }
@@ -340,7 +353,7 @@ public nodes: Nodes;
    * @param {string} text - alt text
    * @returns {void}
    */
-  fillAlt(text) {
+  fillAlt(text: string):void {
     if (this.nodes.alt) {
       this.nodes.alt.innerHTML = text;
     }

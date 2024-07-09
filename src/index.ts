@@ -137,6 +137,8 @@ export default class ImageTool implements BlockTool {
      */
     this._data = {
       caption: '',
+      alt: '',
+      link: '',
       withBorder: false,
       withBackground: false,
       stretched: false,
@@ -232,8 +234,9 @@ export default class ImageTool implements BlockTool {
     const alt = this.ui.nodes.alt;
 
     this._data.caption = caption.innerHTML;
-    this._data.link = link.innerHTML;
     this._data.alt = alt.innerHTML;
+    this._data.link = link.innerHTML;
+
 
     return this.data;
   }
@@ -371,8 +374,9 @@ export default class ImageTool implements BlockTool {
     this._data.link = data.link || '';
     this._data.alt = data.alt || '';
     this.ui.fillCaption(this._data.caption);
-    this.ui.fillLink(this._data.link);
     this.ui.fillAlt(this._data.alt);
+    this.ui.fillLink(this._data.link);
+
 
     ImageTool.tunes.forEach(({ name: tune }) => {
       const value = typeof data[tune as keyof ImageToolData] !== 'undefined' ? data[tune as keyof ImageToolData] === true || data[tune as keyof ImageToolData] === 'true' : false;
