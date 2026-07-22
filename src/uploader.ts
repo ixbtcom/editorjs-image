@@ -1,7 +1,7 @@
 import ajax from '@codexteam/ajax';
 import isPromise from './utils/isPromise';
-import { UploadOptions } from './types/types';
-import { UploadResponseFormat, ImageConfig } from './types/types';
+import type { UploadOptions } from './types/types';
+import type { UploadResponseFormat, ImageConfig } from './types/types';
 
 /**
  * Params interface for Uploader constructor

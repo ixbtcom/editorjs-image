@@ -1,386 +1,267 @@
 import { IconPicture } from '@codexteam/icons';
-import { make } from './utils/dom';
 import type { API } from '@editorjs/editorjs';
-import { ImageToolData, ImageConfig } from './types/types';
+import type { ImageConfig, ImageToolData } from './types/types';
+import { make } from './utils/dom';
 
-/**
- * Enumeration representing the different states of the UI.
- */
 enum UiState {
-  /**
-   * The UI is in an empty state, with no image loaded or being uploaded.
-   */
-  Empty = "empty",
+  Empty = 'empty',
+  Uploading = 'loading',
+  Filled = 'filled'
+}
 
-  /**
-   * The UI is in an uploading state, indicating an image is currently being uploaded.
-   */
-  Uploading = "uploading", 
-
-  /**
-   * The UI is in a filled state, with an image successfully loaded.
-   */
-  Filled = "filled"
-};
-
-/**
- * Nodes interface representing various elements in the UI.
- */
 interface Nodes {
-  /**
-   * Wrapper element in the UI.
-   */
   wrapper: HTMLElement;
-
-  /**
-   * Container for the image element in the UI.
-   */
   imageContainer: HTMLElement;
-
-  /**
-   * Button for selecting files.
-   */
+  controls: HTMLElement;
+  coverButton: HTMLButtonElement | null;
   fileButton: HTMLElement;
-
-  /**
-   * Represents the image element in the UI, if one is present; otherwise, it's undefined.
-   */
   imageEl?: HTMLElement;
-
-  /**
-   * Preloader element for the image.
-   */
   imagePreloader: HTMLElement;
-  
-  /**
-   * Caption element for the image.
-   */
+  imageDimensions: HTMLElement;
   caption: HTMLElement;
-
-  /**
-   * Link element for the image
-   */
-
   link: HTMLElement;
-
-  /**
-   * Alt element for the image
-   */
-
   alt: HTMLElement;
 }
 
-/**
- * ConstructorParams interface representing parameters for the Ui class constructor.
- */
 interface ConstructorParams {
-  /**
-   * Editor.js API.
-   */
   api: API;
-  /**
-   * Configuration for the image.
-   */
   config: ImageConfig;
-  /**
-   * Callback function for selecting a file.
-   */
   onSelectFile: () => void;
-  /**
-   * Flag indicating if the UI is in read-only mode.
-   */
+  onDelete: () => void;
+  onSetCover: () => boolean;
   readOnly: boolean;
 }
 
-/**
- * Class for working with UI:
- *  - rendering base structure
- *  - show/hide preview
- *  - apply tune view
- */
 export default class Ui {
-/**
- * API instance for Editor.js.
- */
-private api: API;
+  public nodes: Nodes;
 
-/**
- * Configuration for the image tool.
- */
-private config: ImageConfig;
+  private api: API;
+  private config: ImageConfig;
+  private readOnly: boolean;
+  private onSelectFile: () => void;
+  private onDelete: () => void;
+  private onSetCover: () => boolean;
 
-/**
- * Callback function for selecting a file.
- */
-private onSelectFile: () => void;
-
-/**
- * Flag indicating if the UI is in read-only mode.
- */
-private readOnly: boolean;
-
-/**
- * Nodes representing various elements in the UI.
- */
-public nodes: Nodes;
-  /**
-   * @param {object} ui - image tool Ui module
-   * @param {object} ui.api - Editor.js API
-   * @param {ImageConfig} ui.config - user config
-   * @param {Function} ui.onSelectFile - callback for clicks on Select file button
-   * @param {boolean} ui.readOnly - read-only mode flag
-   */
-  constructor({ api, config, onSelectFile, readOnly }: ConstructorParams) {
+  constructor({ api, config, onSelectFile, onDelete, onSetCover, readOnly }: ConstructorParams) {
     this.api = api;
     this.config = config;
-    this.onSelectFile = onSelectFile;
     this.readOnly = readOnly;
+    this.onSelectFile = onSelectFile;
+    this.onDelete = onDelete;
+    this.onSetCover = onSetCover;
+
+    const imageContainer = make('div', [this.CSS.imageContainer]);
+    const controls = make('div', [this.CSS.controls]);
+    const deleteButton = make('button', [this.CSS.remove], { type: 'button' }) as HTMLButtonElement;
+    const coverButton = this.config.cover?.enabled === true
+      ? make('button', [this.CSS.cover], { type: 'button' }) as HTMLButtonElement
+      : null;
+
+    if (coverButton !== null) {
+      coverButton.innerHTML = '★';
+      coverButton.title = 'Сделать обложкой';
+      coverButton.setAttribute('aria-label', 'Сделать обложкой');
+      coverButton.setAttribute('aria-pressed', 'false');
+      coverButton.addEventListener('click', (event) => {
+        event.stopPropagation();
+        if (this.onSetCover()) {
+          this.markCover(true);
+        }
+      });
+    }
+
+    deleteButton.innerHTML = '×';
+    deleteButton.title = 'Удалить изображение';
+    deleteButton.setAttribute('aria-label', 'Удалить изображение');
+    deleteButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      this.onDelete();
+    });
+
+    if (coverButton !== null) {
+      controls.append(coverButton);
+    }
+    controls.append(deleteButton);
+
     this.nodes = {
       wrapper: make('div', [this.CSS.baseClass, this.CSS.wrapper]),
-      imageContainer: make('div', [ this.CSS.imageContainer ]),
+      imageContainer,
+      controls,
+      coverButton,
       fileButton: this.createFileButton(),
-      imageEl: undefined,
       imagePreloader: make('div', this.CSS.imagePreloader),
-      caption: make('div', [this.CSS.input, this.CSS.caption], {
-        contentEditable: !this.readOnly,
-      }),
-      alt: make('div', [this.CSS.input, this.CSS.caption], {
-        contentEditable: !this.readOnly,
-      }),
-      link: make('div', [this.CSS.input, this.CSS.caption], {
-        contentEditable: !this.readOnly,
-      }),
-
+      imageDimensions: make('div', this.CSS.dimensions),
+      caption: make('div', [this.CSS.input, this.CSS.caption], { contentEditable: !this.readOnly }),
+      alt: make('div', [this.CSS.input, this.CSS.source], { contentEditable: !this.readOnly }),
+      link: make('div', [this.CSS.input, this.CSS.sourceLink], { contentEditable: !this.readOnly }),
     };
-
-    /**
-     * Create base structure
-     *  <wrapper>
-     *    <image-container>
-     *      <image-preloader />
-     *    </image-container>
-     *    <caption />
-     *    <select-file-button />
-     *  </wrapper>
-     */
 
     this.nodes.caption.dataset.placeholder = this.config.captionPlaceholder;
     this.nodes.alt.dataset.placeholder = this.config.altPlaceholder;
     this.nodes.link.dataset.placeholder = this.config.linkPlaceholder;
-    this.nodes.imageContainer.appendChild(this.nodes.imagePreloader);
-    this.nodes.wrapper.appendChild(this.nodes.imageContainer);
-    this.nodes.wrapper.appendChild(this.nodes.caption);
-    this.nodes.wrapper.appendChild(this.nodes.alt);
-    this.nodes.wrapper.appendChild(this.nodes.link);
-    this.nodes.wrapper.appendChild(this.nodes.fileButton);
+    this.nodes.controls.hidden = this.readOnly;
+    this.nodes.imageDimensions.hidden = true;
+    this.nodes.imageContainer.append(
+      this.nodes.imagePreloader,
+      this.nodes.controls,
+      this.nodes.imageDimensions
+    );
+    this.nodes.wrapper.append(
+      this.nodes.imageContainer,
+      this.nodes.caption,
+      this.nodes.alt,
+      this.nodes.link,
+      this.nodes.fileButton
+    );
   }
 
-  /**
-   * CSS classes
-   *
-   * @returns {object}
-   */
-  get CSS(): Record<string, string> {
-    return {
-      baseClass: this.api.styles.block,
-      loading: this.api.styles.loader,
-      input: this.api.styles.input,
-      button: this.api.styles.button,
+  public render(toolData: ImageToolData): HTMLElement {
+    const isFilled = typeof toolData.file?.url === 'string' && toolData.file.url !== '';
+    const storedMediaId = toolData.file?.media_id;
+    const mediaId = typeof storedMediaId === 'string' && storedMediaId !== '' ? storedMediaId : null;
 
-      /**
-       * Tool's classes
-       */
-      wrapper: 'image-tool',
-      imageContainer: 'image-tool__image',
-      imagePreloader: 'image-tool__image-preloader',
-      imageEl: 'image-tool__image-picture',
-      caption: 'image-tool__caption',
-    };
-  };
+    this.nodes.controls.hidden = !isFilled || this.readOnly;
+    this.nodes.coverButton?.toggleAttribute('hidden', mediaId === null);
+    this.markCover(mediaId !== null && (this.config.cover?.isCover?.(mediaId) ?? false));
+    this.toggleStatus(isFilled ? UiState.Uploading : UiState.Empty);
 
-  /**
-   * Renders tool UI
-   *
-   * @param {ImageToolData} toolData - saved tool data
-   * @returns {Element}
-   */
-  render(toolData: ImageToolData): HTMLElement  {
-    if (!toolData.file || Object.keys(toolData.file).length === 0) {
-      this.toggleStatus(UiState.Empty);
-    } else {
-      this.toggleStatus(UiState.Uploading);
-    }
     return this.nodes.wrapper;
   }
 
-  /**
-   * Creates upload-file button
-   *
-   * @returns {Element}
-   */
-  createFileButton(): HTMLElement {
-    const button = make('div', [ this.CSS.button ]);
-
-    button.innerHTML = this.config.buttonContent || `${IconPicture} ${this.api.i18n.t('Select an Image')}`;
-
-    button.addEventListener('click', () => {
-      this.onSelectFile();
-    });
-
-    return button;
+  public applyTune(tuneName: string, status: boolean): void {
+    this.nodes.wrapper.classList.toggle(`${this.CSS.wrapper}--${tuneName}`, status);
   }
 
-  /**
-   * Shows uploading preloader
-   *
-   * @param {string} src - preview source
-   * @returns {void}
-   */
-  showPreloader(src: string): void {
-    this.nodes.imagePreloader.style.backgroundImage = `url(${src})`;
+  public markCover(isCover: boolean): void {
+    this.nodes.imageContainer.toggleAttribute('data-cover', isCover);
+    this.nodes.coverButton?.setAttribute('aria-pressed', String(isCover));
+  }
 
+  public applyCrop(
+    originalUrl: string,
+    imagorPath?: string,
+    crop?: string,
+    croppedWidth?: number,
+    croppedHeight?: number,
+    originalWidth?: number,
+    originalHeight?: number
+  ): void {
+    if (this.nodes.imageEl === undefined) {
+      return;
+    }
+
+    if (typeof crop === 'string' && crop !== '') {
+      this.nodes.imageContainer.dataset.crop = crop;
+      this.nodes.imageEl.style.width = '100%';
+      this.nodes.imageEl.setAttribute('src', this.buildPreviewUrl(imagorPath, crop) || originalUrl);
+      this.setImageDimensions(croppedWidth, croppedHeight);
+
+      return;
+    }
+
+    delete this.nodes.imageContainer.dataset.crop;
+    this.nodes.imageEl.style.width = '';
+    this.nodes.imageEl.setAttribute('src', originalUrl);
+    this.setImageDimensions(originalWidth, originalHeight);
+  }
+
+  public showPreloader(src: string): void {
+    this.nodes.imagePreloader.style.backgroundImage = `url(${src})`;
     this.toggleStatus(UiState.Uploading);
   }
 
-  /**
-   * Hide uploading preloader
-   *
-   * @returns {void}
-   */
-  hidePreloader(): void {
+  public hidePreloader(): void {
     this.nodes.imagePreloader.style.backgroundImage = '';
     this.toggleStatus(UiState.Empty);
   }
 
-  /**
-   * Shows an image
-   *
-   * @param {string} url - image source
-   * @returns {void}
-   */
-  fillImage(url: string): void {
-    /**
-     * Check for a source extension to compose element correctly: video tag for mp4, img — for others
-     */
+  public fillImage(url: string): void {
+    this.nodes.imageEl?.remove();
     const tag = /\.mp4$/.test(url) ? 'VIDEO' : 'IMG';
-
-    const attributes: { [key: string]: any} = {
-      src: url,
-    };
-
-    /**
-     * We use eventName variable because IMG and VIDEO tags have different event to be called on source load
-     * - IMG: load
-     * - VIDEO: loadeddata
-     *
-     * @type {string}
-     */
+    const attributes: Record<string, string | boolean> = {};
     let eventName = 'load';
 
-    /**
-     * Update attributes and eventName if source is a mp4 video
-     */
     if (tag === 'VIDEO') {
-      /**
-       * Add attributes for playing muted mp4 as a gif
-       *
-       * @type {boolean}
-       */
       attributes.autoplay = true;
       attributes.loop = true;
       attributes.muted = true;
       attributes.playsinline = true;
-
-      /**
-       * Change event to be listened
-       *
-       * @type {string}
-       */
       eventName = 'loadeddata';
     }
 
-    /**
-     * Compose tag with defined attributes
-     *
-     * @type {Element}
-     */
     this.nodes.imageEl = make(tag, this.CSS.imageEl, attributes);
-
-    /**
-     * Add load event listener
-     */
     this.nodes.imageEl.addEventListener(eventName, () => {
       this.toggleStatus(UiState.Filled);
-
-      /**
-       * Preloader does not exists on first rendering with presaved data
-       */
-      if (this.nodes.imagePreloader) {
-        this.nodes.imagePreloader.style.backgroundImage = '';
-      }
+      this.nodes.imagePreloader.style.backgroundImage = '';
     });
-
     this.nodes.imageContainer.appendChild(this.nodes.imageEl);
+    this.nodes.imageEl.setAttribute('src', url);
   }
 
-  /**
-   * Shows caption input
-   *
-   * @param {string} text - caption text
-   * @returns {void}
-   */
-  fillCaption(text: string): void {
-    if (this.nodes.caption) {
-      this.nodes.caption.innerHTML = text;
+  public fillCaption(text: string): void {
+    this.nodes.caption.innerHTML = text;
+  }
+
+  public fillLink(text: string): void {
+    this.nodes.link.innerHTML = text;
+  }
+
+  public fillAlt(text: string): void {
+    this.nodes.alt.innerHTML = text;
+  }
+
+  private createFileButton(): HTMLElement {
+    const button = make('div', [this.CSS.button]);
+
+    button.innerHTML = this.config.buttonContent || `${IconPicture} ${this.api.i18n.t('Select an Image')}`;
+    button.addEventListener('click', () => this.onSelectFile());
+
+    return button;
+  }
+
+  private setImageDimensions(width?: number, height?: number): void {
+    const hasDimensions = Number.isFinite(width) && Number.isFinite(height)
+      && (width ?? 0) > 0 && (height ?? 0) > 0;
+
+    this.nodes.imageDimensions.hidden = !hasDimensions;
+    this.nodes.imageDimensions.textContent = hasDimensions ? `${width} × ${height}` : '';
+
+    if (this.nodes.imageEl instanceof HTMLElement) {
+      this.nodes.imageEl.style.aspectRatio = hasDimensions ? `${width} / ${height}` : '';
     }
   }
 
-  /**
-   * Shows link input
-   *
-   * @param {string} text - link text
-   * @returns {void}
-   */
-  fillLink(text: string):void {
-    if (this.nodes.link) {
-      this.nodes.link.innerHTML = text;
+  private buildPreviewUrl(imagorPath: string | undefined, crop: string, maxWidth = 600): string {
+    if (typeof this.config.mediaHost !== 'string' || this.config.mediaHost === ''
+      || typeof imagorPath !== 'string' || imagorPath === '') {
+      return '';
     }
+
+    return `${this.config.mediaHost}/unsafe/${crop}/fit-in/${maxWidth}x0/${imagorPath}`;
   }
 
-  /**
-   * Shows alt input
-   *
-   * @param {string} text - alt text
-   * @returns {void}
-   */
-  fillAlt(text: string):void {
-    if (this.nodes.alt) {
-      this.nodes.alt.innerHTML = text;
-    }
+  private toggleStatus(status: UiState): void {
+    Object.values(UiState).forEach((value) => {
+      this.nodes.wrapper.classList.toggle(`${this.CSS.wrapper}--${value}`, status === value);
+    });
   }
 
-  /**
-   * Changes UI status
-   *
-   * @param {string} status - see {@link Ui.status} constants
-   * @returns {void}
-   */
-  toggleStatus(status: UiState): void {
-    for (const statusType in UiState) {
-      if (Object.prototype.hasOwnProperty.call(UiState, statusType)) {
-          this.nodes.wrapper.classList.toggle(`${this.CSS.wrapper}--${UiState[statusType as keyof typeof UiState]}`, status === UiState[statusType as keyof typeof UiState]);
-      }
-    }
-  }
-
-  /**
-   * Apply visual representation of activated tune
-   *
-   * @param {string} tuneName - one of available tunes {@link Tunes.tunes}
-   * @param {boolean} status - true for enable, false for disable
-   * @returns {void}
-   */
-  applyTune(tuneName: string, status: boolean): void {
-    this.nodes.wrapper.classList.toggle(`${this.CSS.wrapper}--${tuneName}`, status);
+  private get CSS(): Record<string, string> {
+    return {
+      baseClass: this.api.styles.block,
+      input: this.api.styles.input,
+      button: this.api.styles.button,
+      wrapper: 'image-tool',
+      imageContainer: 'image-tool__image',
+      imagePreloader: 'image-tool__image-preloader',
+      dimensions: 'image-tool__dimensions',
+      imageEl: 'image-tool__image-picture',
+      caption: 'image-tool__caption',
+      source: 'image-tool__source',
+      sourceLink: 'image-tool__source-link',
+      controls: 'image-tool__controls',
+      cover: 'image-tool__cover',
+      remove: 'image-tool__remove',
+    };
   }
 }

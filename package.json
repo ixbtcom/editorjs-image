@@ -1,6 +1,7 @@
 {
   "name": "@ixbtcom/editorjs-image",
   "version": "2.9.2",
+  "packageManager": "pnpm@11.1.2",
   "keywords": [
     "codex editor",
     "image",
@@ -26,9 +27,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint src/ --ext .ts",
-    "lint:errors": "eslint src/ --quiet",
-    "lint:fix": "eslint src/ --fix"
+    "lint": "eslint",
+    "lint:errors": "eslint --quiet",
+    "lint:fix": "eslint --fix"
   },
   "author": {
     "name": "Mikail Akman",
@@ -36,15 +37,10 @@
   },
   "devDependencies": {
     "@codexteam/ajax": "^4.2.0",
-    "@editorjs/editorjs": "2.30.0-rc.12",
-    "@typescript-eslint/eslint-plugin": "^7.13.1",
-    "@typescript-eslint/parser": "^7.13.1",
-    "eslint": "^7.22.0",
-    "eslint-config-codex": "^2.0.1",
-    "eslint-loader": "^4.0.2",
+    "@editorjs/editorjs": "^2.30.8",
+    "eslint": "^9.39.5",
+    "eslint-config-codex": "^2.0.3",
     "formidable": "^3.5.1",
-    "postcss-nested": "^6.0.1",
-    "postcss-nested-ancestors": "^3.0.0",
     "request": "^2.88.0",
     "typescript": "^5.4.5",
     "vite": "^5.3.1",

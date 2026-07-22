@@ -85,6 +85,8 @@ export default class ImageTool implements BlockTool {
      * @returns {ImageToolData}
      */
     save(): ImageToolData;
+    /** Queue permanent media cleanup when a legacy block is removed. */
+    removed(): void;
     /**
      * Returns configuration for block tunes: add background, add border, stretch image
      *
@@ -106,7 +108,7 @@ export default class ImageTool implements BlockTool {
      * @see {@link https://github.com/codex-team/editor.js/blob/master/docs/tools.md#paste-handling}
      * @returns {{tags: string[], patterns: object<string, RegExp>, files: {extensions: string[], mimeTypes: string[]}}}
      */
-    static get pasteConfig(): PasteConfig;
+    static get pasteConfig(): PasteConfig | false;
     /**
      * Specify paste handlers
      *
@@ -147,6 +149,10 @@ export default class ImageTool implements BlockTool {
     set image(file: {
         url: string;
     } | undefined);
+    /** Select this media item as the publication cover. */
+    private selectCover;
+    /** Delete this block through the Editor.js API. */
+    private deleteBlock;
     /**
      * File uploading callback
      *

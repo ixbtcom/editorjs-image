@@ -27,7 +27,7 @@ export interface ActionConfig {
     /**
      * An optional action function to be executed when the tune is activated.
      */
-    action?: Function;
+    action?: (name: string) => void;
 }
 /**
  * UploadResponseFormat interface representing the response format expected from the backend on file uploading.
@@ -77,6 +77,14 @@ export type ImageToolData<Actions = {}, AdditionalFileData = {}> = {
      * Flag indicating whether the image is stretched.
      */
     stretched: boolean;
+    /** Imagor crop coordinates for the rendered image. */
+    crop?: string;
+    /** Pixel width of the cropped region. */
+    croppedWidth?: number;
+    /** Pixel height of the cropped region. */
+    croppedHeight?: number;
+    /** Whether a click should open the original instead of the cropped image. */
+    showOriginalOnClick?: boolean;
     /**
      * Object containing the URL of the image file.
      * Also can contain any additional data.
@@ -86,8 +94,8 @@ export type ImageToolData<Actions = {}, AdditionalFileData = {}> = {
          * The URL of the image.
          */
         url: string;
-    } & AdditionalFileData;
-} & (Actions extends Record<string, boolean> ? Actions : {});
+    } & AdditionalFileData & Record<string, unknown>;
+} & (Actions extends Record<string, boolean> ? Actions : {}) & Record<string, unknown>;
 /**
  *
  * @description Config supported by Tool
@@ -155,4 +163,14 @@ export interface ImageConfig {
      * Additional actions for the tool.
      */
     actions?: ActionConfig[];
+    /** Public Imagor host used to render cropped previews in the editor. */
+    mediaHost?: string;
+    /** Called after a media-backed legacy block is removed. */
+    onMediaRemoved?: (mediaId: string) => void;
+    /** Host-managed publication cover selection. */
+    cover?: {
+        enabled?: boolean;
+        isCover?: (mediaId: string | null) => boolean;
+        onCoverChanged?: (coverUuid: string | null, blockId: string) => void;
+    };
 }

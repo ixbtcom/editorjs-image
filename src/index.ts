@@ -38,7 +38,7 @@ import Ui from './ui';
 import Uploader from './uploader';
 
 import { IconAddBorder, IconStretch, IconAddBackground, IconPicture } from '@codexteam/icons';
-import { ActionConfig, UploadResponseFormat, ImageToolData, ImageConfig } from './types/types';
+import type { ActionConfig, UploadResponseFormat, ImageToolData, ImageConfig } from './types/types';
 
 
 type ImageToolConstructorOptions = BlockToolConstructorOptions<ImageToolData, ImageConfig>
@@ -91,22 +91,26 @@ export default class ImageTool implements BlockTool {
     this.api = api;
     this.readOnly = readOnly;
     this.block = block;
+    const toolConfig = config ?? {} as ImageConfig;
 
     /**
      * Tool's initial config
      */
     this.config = {
-      endpoints: config.endpoints,
-      additionalRequestData: config.additionalRequestData,
-      additionalRequestHeaders: config.additionalRequestHeaders,
-      field: config.field,
-      types: config.types,
-      captionPlaceholder: this.api.i18n.t(config.captionPlaceholder ? config.captionPlaceholder: 'Caption'),
-      altPlaceholder: this.api.i18n.t(config.altPlaceholder ? config.altPlaceholder: 'Source'),
-      linkPlaceholder: this.api.i18n.t(config.linkPlaceholder ? config.linkPlaceholder: 'Link'),
-      buttonContent: config.buttonContent,
-      uploader: config.uploader,
-      actions: config.actions,
+      endpoints: toolConfig.endpoints ?? {},
+      additionalRequestData: toolConfig.additionalRequestData,
+      additionalRequestHeaders: toolConfig.additionalRequestHeaders,
+      field: toolConfig.field,
+      types: toolConfig.types,
+      captionPlaceholder: this.api.i18n.t(toolConfig.captionPlaceholder ? toolConfig.captionPlaceholder: 'Caption'),
+      altPlaceholder: this.api.i18n.t(toolConfig.altPlaceholder ? toolConfig.altPlaceholder: 'Source'),
+      linkPlaceholder: this.api.i18n.t(toolConfig.linkPlaceholder ? toolConfig.linkPlaceholder: 'Link'),
+      buttonContent: toolConfig.buttonContent,
+      uploader: toolConfig.uploader,
+      actions: toolConfig.actions,
+      mediaHost: toolConfig.mediaHost,
+      cover: toolConfig.cover,
+      onMediaRemoved: toolConfig.onMediaRemoved,
     };
 
     /**
@@ -124,6 +128,7 @@ export default class ImageTool implements BlockTool {
     this.ui = new Ui({
       api,
       config: this.config,
+      onDelete: () => this.deleteBlock(),
       onSelectFile: () => {
         this.uploader.uploadSelectedFile({
           onPreview: (src: string) => {
@@ -131,6 +136,7 @@ export default class ImageTool implements BlockTool {
           },
         });
       },
+      onSetCover: () => this.selectCover(),
       readOnly,
     });
 
@@ -244,6 +250,15 @@ export default class ImageTool implements BlockTool {
     return this.data;
   }
 
+  /** Queue permanent media cleanup when a legacy block is removed. */
+  removed(): void {
+    const mediaId = this._data.file.media_id;
+
+    if (typeof mediaId === 'string' && mediaId !== '') {
+      this.config.onMediaRemoved?.(mediaId);
+    }
+  }
+
   /**
    * Returns configuration for block tunes: add background, add border, stretch image
    *
@@ -280,7 +295,7 @@ export default class ImageTool implements BlockTool {
    *
    * @public
    */
-  appendCallback() {
+  appendCallback(): void {
     this.ui.nodes.fileButton.click();
   }
 
@@ -290,30 +305,8 @@ export default class ImageTool implements BlockTool {
    * @see {@link https://github.com/codex-team/editor.js/blob/master/docs/tools.md#paste-handling}
    * @returns {{tags: string[], patterns: object<string, RegExp>, files: {extensions: string[], mimeTypes: string[]}}}
    */
-  static get pasteConfig(): PasteConfig {
-    return {
-      /**
-       * Paste HTML into Editor
-       */
-      tags: [
-        {
-          img: { src: true },
-        },
-      ],
-      /**
-       * Paste URL of image into the Editor
-       */
-      patterns: {
-        image: /https?:\/\/\S+\.(gif|jpe?g|tiff|png|svg|webp)(\?[a-z0-9=]*)?$/i,
-      },
-
-      /**
-       * Drag n drop file from into the Editor
-       */
-      files: {
-        mimeTypes: [ 'image/*' ],
-      },
-    };
+  static get pasteConfig(): PasteConfig | false {
+    return false;
   }
 
   /**
@@ -371,7 +364,20 @@ export default class ImageTool implements BlockTool {
    * @param {ImageToolData} data - data in Image Tool format
    */
   set data(data: ImageToolData) {
-    this.image = data.file;
+    const file = data.file || { url: '' };
+
+    this._data = { ...this._data, ...data, file };
+    this.image = file;
+
+    const imagorPathValue = file.imagor_path ?? file.imagorPath;
+    const imagorPath = typeof imagorPathValue === 'string' ? imagorPathValue : undefined;
+    const crop = typeof data.crop === 'string' && data.crop !== '' ? data.crop : undefined;
+    const croppedWidth = typeof data.croppedWidth === 'number' ? data.croppedWidth : undefined;
+    const croppedHeight = typeof data.croppedHeight === 'number' ? data.croppedHeight : undefined;
+    const originalWidth = typeof file.width === 'number' ? file.width : undefined;
+    const originalHeight = typeof file.height === 'number' ? file.height : undefined;
+
+    this.ui.applyCrop(file.url, imagorPath, crop, croppedWidth, croppedHeight, originalWidth, originalHeight);
 
     this._data.caption = data.caption || '';
     this._data.alt = data.alt || '';
@@ -412,6 +418,38 @@ export default class ImageTool implements BlockTool {
 
     if (file && file.url) {
       this.ui.fillImage(file.url);
+    }
+  }
+
+  /** Select this media item as the publication cover. */
+  private selectCover(): boolean {
+    if (this.config.cover?.enabled !== true) {
+      return false;
+    }
+
+    const mediaId = this._data.file.media_id;
+
+    if (typeof mediaId !== 'string' || mediaId === '') {
+      this.api.notifier.show({
+        message: this.api.i18n.t('Сначала дождитесь загрузки картинки'),
+        style: 'error',
+      });
+
+      return false;
+    }
+
+    this.config.cover.onCoverChanged?.(mediaId, this.block.id);
+    this.api.notifier.show({ message: this.api.i18n.t('Базовая обложка обновлена') });
+
+    return true;
+  }
+
+  /** Delete this block through the Editor.js API. */
+  private deleteBlock(): void {
+    const blockIndex = this.api.blocks.getBlockIndex(this.block.id);
+
+    if (blockIndex >= 0) {
+      this.api.blocks.delete(blockIndex);
     }
   }
 
