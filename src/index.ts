@@ -302,11 +302,16 @@ export default class ImageTool implements BlockTool {
   /**
    * Specify paste substitutes
    *
+   * ⛔ Пустой конфиг, а НЕ `false`: legacy-блок вставку не перехватывает (новые
+   * картинки ведёт блок `media`), но `false` кладёт тул в `exceptionList`
+   * EditorJS, и вставка внутри его блока не обрабатывается вообще — картинка из
+   * буфера при курсоре в старом блоке уходила бы в никуда.
+   *
    * @see {@link https://github.com/codex-team/editor.js/blob/master/docs/tools.md#paste-handling}
    * @returns {{tags: string[], patterns: object<string, RegExp>, files: {extensions: string[], mimeTypes: string[]}}}
    */
   static get pasteConfig(): PasteConfig | false {
-    return false;
+    return {} as PasteConfig;
   }
 
   /**
