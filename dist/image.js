@@ -1,6 +1,6 @@
 (function(){"use strict";try{if(typeof document<"u"){var e=document.createElement("style");e.appendChild(document.createTextNode(':root{--ej-radius-sm: 6px;--ej-radius-md: 8px;--ej-radius-lg: 12px;--ej-bg-page: #fff;--ej-bg-surface: #fff;--ej-bg-muted: var(--gray-50, #f9fafb);--ej-bg-input: #fff;--ej-ring: rgba(3, 7, 18, .1);--ej-ring-focus: var(--primary-600, #2563eb);--ej-border: var(--gray-200, #e5e7eb);--ej-border-strong: rgba(3, 7, 18, .05);--ej-text: var(--gray-950, #030712);--ej-text-secondary: var(--gray-500, #6b7280);--ej-text-muted: var(--gray-400, #9ca3af);--ej-text-on-primary: #fff;--ej-primary: var(--primary-600, #2563eb);--ej-primary-hover: var(--primary-700, #1d4ed8);--ej-primary-light: var(--primary-50, #eff6ff);--ej-primary-muted: var(--primary-100, #dbeafe);--ej-success-bg: var(--success-50, #f0fdf4);--ej-success-border: var(--success-500, #22c55e);--ej-success-text: var(--success-700, #15803d);--ej-warning-bg: var(--warning-50, #fffbeb);--ej-warning-border: var(--warning-500, #f59e0b);--ej-warning-text: var(--warning-700, #b45309);--ej-danger: var(--danger-600, #dc2626);--ej-danger-bg: var(--danger-50, #fef2f2);--ej-danger-border: var(--danger-500, #ef4444);--ej-danger-text: var(--danger-700, #b91c1c);--ej-danger-hover-bg: var(--danger-100, #fee2e2);--ej-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, .05);--ej-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -2px rgba(0, 0, 0, .1);--ej-transition: 75ms ease;--ej-control-bg: rgba(255, 255, 255, .9);--ej-control-hover: rgba(0, 0, 0, .05);--ej-icon-color: var(--gray-400, #9ca3af)}.dark{--ej-bg-page: var(--gray-900, #111827);--ej-bg-surface: var(--gray-900, #111827);--ej-bg-muted: rgba(255, 255, 255, .05);--ej-bg-input: rgba(255, 255, 255, .05);--ej-ring: rgba(255, 255, 255, .2);--ej-ring-focus: var(--primary-500, #3b82f6);--ej-border: rgba(255, 255, 255, .1);--ej-border-strong: rgba(255, 255, 255, .1);--ej-text: #fff;--ej-text-secondary: var(--gray-400, #9ca3af);--ej-text-muted: var(--gray-500, #6b7280);--ej-text-on-primary: #fff;--ej-control-bg: rgba(30, 30, 30, .9);--ej-control-hover: rgba(255, 255, 255, .1);--ej-icon-color: var(--gray-500, #6b7280);--ej-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, .3);--ej-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, .3), 0 2px 4px -2px rgba(0, 0, 0, .2)}@keyframes ej-spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.image-tool{--bg-color: var(--ej-bg-muted);--front-color: var(--ej-primary);--border-color: var(--ej-border)}.image-tool__image{position:relative;margin-bottom:10px;overflow:hidden;border-radius:var(--ej-radius-md)}.image-tool__image-picture{display:block;max-width:100%;vertical-align:bottom}.image-tool__image-preloader{position:relative;width:50px;height:50px;margin:auto;border-radius:50%;background-color:var(--bg-color);background-position:center;background-size:cover}.image-tool__image-preloader:after{content:"";position:absolute;z-index:3;top:50%;left:50%;box-sizing:border-box;width:60px;height:60px;margin-top:-30px;margin-left:-30px;border:2px solid var(--bg-color);border-top-color:var(--front-color);border-radius:50%;animation:image-preloader-spin 2s infinite linear}.image-tool__controls{position:absolute;z-index:10;top:8px;right:8px;display:flex;gap:4px;opacity:0;transition:opacity var(--ej-transition)}.image-tool__controls[hidden]{display:none}.image-tool__image:hover .image-tool__controls,.image-tool__image:focus-within .image-tool__controls{opacity:1}.image-tool__cover,.image-tool__remove{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;padding:0;border:0;border-radius:var(--ej-radius-sm);background:var(--ej-control-bg);color:var(--ej-text);cursor:pointer;font-size:16px;line-height:1}.image-tool__cover:hover,.image-tool__remove:hover{background:var(--ej-control-hover)}.image-tool__cover:focus-visible,.image-tool__remove:focus-visible{outline:2px solid var(--ej-ring-focus);outline-offset:2px}.image-tool__cover{color:#fbbf24}.image-tool__remove{color:var(--ej-danger)}.image-tool__image[data-cover]{outline:2px solid #3b82f6;outline-offset:-2px}.image-tool__image[data-cover]:before{content:"Обложка";position:absolute;z-index:3;top:6px;left:6px;padding:2px 8px;border-radius:var(--ej-radius-sm);background:#3b82f6e6;color:#fff;font-size:11px;font-weight:600;pointer-events:none}.image-tool__dimensions{position:absolute;z-index:5;bottom:8px;left:8px;padding:2px 6px;border-radius:var(--ej-radius-sm);background:#0009;color:#fff;font-family:monospace;font-size:11px;pointer-events:none}.image-tool__caption,.image-tool__source,.image-tool__source-link{position:relative;margin-bottom:12px;word-break:break-word;white-space:normal}.image-tool__caption[contentEditable=true][data-placeholder]:before,.image-tool__source[contentEditable=true][data-placeholder]:before,.image-tool__source-link[contentEditable=true][data-placeholder]:before{content:attr(data-placeholder);position:absolute!important;display:none;color:var(--ej-text-muted);font-weight:400}.image-tool__caption[contentEditable=true][data-placeholder]:empty:before,.image-tool__source[contentEditable=true][data-placeholder]:empty:before,.image-tool__source-link[contentEditable=true][data-placeholder]:empty:before{display:block}.image-tool--empty .image-tool__image,.image-tool--empty .image-tool__caption,.image-tool--loading .image-tool__caption{display:none}.image-tool .cdx-button{display:flex;align-items:center;justify-content:center}.image-tool .cdx-button svg{height:auto;margin-right:6px}.image-tool--filled .cdx-button,.image-tool--filled .image-tool__image-preloader,.image-tool--loading .image-tool__image-picture{display:none}.image-tool--loading .image-tool__image{display:flex;min-height:200px;border:1px solid var(--border-color);background:var(--ej-bg-surface)}.image-tool--withBorder .image-tool__image{border:1px solid var(--border-color)}.image-tool--withBackground .image-tool__image{padding:15px;background:var(--bg-color)}.image-tool--withBackground .image-tool__image-picture{max-width:60%;margin:0 auto}.image-tool--stretched .image-tool__image-picture{width:100%}@keyframes image-preloader-spin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion: reduce){.image-tool__controls{transition-duration:.01ms}}')),document.head.appendChild(e)}}catch(o){console.error("vite-plugin-css-injected-by-js",o)}})();
 const I = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19V19C9.13623 19 8.20435 19 7.46927 18.6955C6.48915 18.2895 5.71046 17.5108 5.30448 16.5307C5 15.7956 5 14.8638 5 13V12C5 9.19108 5 7.78661 5.67412 6.77772C5.96596 6.34096 6.34096 5.96596 6.77772 5.67412C7.78661 5 9.19108 5 12 5H13.5C14.8956 5 15.5933 5 16.1611 5.17224C17.4395 5.56004 18.44 6.56046 18.8278 7.83886C19 8.40666 19 9.10444 19 10.5V10.5"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 13V16M16 19V16M19 16H16M16 16H13"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.5 17.5L17.5 6.5"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.9919 10.5H19.0015"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.9919 19H11.0015"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13L13 5"/></svg>', R = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.9919 9.5H19.0015"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.5 5H14.5096"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M14.625 5H15C17.2091 5 19 6.79086 19 9V9.375"/><path stroke="currentColor" stroke-width="2" d="M9.375 5L9 5C6.79086 5 5 6.79086 5 9V9.375"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.3725 5H9.38207"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 9.5H5.00957"/><path stroke="currentColor" stroke-width="2" d="M9.375 19H9C6.79086 19 5 17.2091 5 15V14.625"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.3725 19H9.38207"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 14.55H5.00957"/><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M16 13V16M16 19V16M19 16H16M16 16H13"/></svg>', O = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><rect width="14" height="14" x="5" y="5" stroke="currentColor" stroke-width="2" rx="4"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.13968 15.32L8.69058 11.5661C9.02934 11.2036 9.48873 11 9.96774 11C10.4467 11 10.9061 11.2036 11.2449 11.5661L15.3871 16M13.5806 14.0664L15.0132 12.533C15.3519 12.1705 15.8113 11.9668 16.2903 11.9668C16.7693 11.9668 17.2287 12.1705 17.5675 12.533L18.841 13.9634"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.7778 9.33331H13.7867"/></svg>', D = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9L20 12L17 15"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 12H20"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 9L4 12L7 15"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12H10"/></svg>';
-function _(C, e = null, o = {}) {
+function E(C, e = null, o = {}) {
   const a = document.createElement(C);
   Array.isArray(e) ? a.classList.add(...e) : e && a.classList.add(e);
   for (const s in o)
@@ -12,22 +12,22 @@ class B {
   constructor({ api: e, config: o, onSelectFile: a, onDelete: s, onSetCover: i, readOnly: n }) {
     var f;
     this.api = e, this.config = o, this.readOnly = n, this.onSelectFile = a, this.onDelete = s, this.onSetCover = i;
-    const u = _("div", [this.CSS.imageContainer]), m = _("div", [this.CSS.controls]), l = _("button", [this.CSS.remove], { type: "button" }), h = ((f = this.config.cover) == null ? void 0 : f.enabled) === !0 ? _("button", [this.CSS.cover], { type: "button" }) : null;
+    const u = E("div", [this.CSS.imageContainer]), m = E("div", [this.CSS.controls]), l = E("button", [this.CSS.remove], { type: "button" }), h = ((f = this.config.cover) == null ? void 0 : f.enabled) === !0 ? E("button", [this.CSS.cover], { type: "button" }) : null;
     h !== null && (h.innerHTML = "★", h.title = "Сделать обложкой", h.setAttribute("aria-label", "Сделать обложкой"), h.setAttribute("aria-pressed", "false"), h.addEventListener("click", (y) => {
       y.stopPropagation(), this.onSetCover() && this.markCover(!0);
     })), l.innerHTML = "×", l.title = "Удалить изображение", l.setAttribute("aria-label", "Удалить изображение"), l.addEventListener("click", (y) => {
       y.stopPropagation(), this.onDelete();
     }), h !== null && m.append(h), m.append(l), this.nodes = {
-      wrapper: _("div", [this.CSS.baseClass, this.CSS.wrapper]),
+      wrapper: E("div", [this.CSS.baseClass, this.CSS.wrapper]),
       imageContainer: u,
       controls: m,
       coverButton: h,
       fileButton: this.createFileButton(),
-      imagePreloader: _("div", this.CSS.imagePreloader),
-      imageDimensions: _("div", this.CSS.dimensions),
-      caption: _("div", [this.CSS.input, this.CSS.caption], { contentEditable: !this.readOnly }),
-      alt: _("div", [this.CSS.input, this.CSS.source], { contentEditable: !this.readOnly }),
-      link: _("div", [this.CSS.input, this.CSS.sourceLink], { contentEditable: !this.readOnly })
+      imagePreloader: E("div", this.CSS.imagePreloader),
+      imageDimensions: E("div", this.CSS.dimensions),
+      caption: E("div", [this.CSS.input, this.CSS.caption], { contentEditable: !this.readOnly }),
+      alt: E("div", [this.CSS.input, this.CSS.source], { contentEditable: !this.readOnly }),
+      link: E("div", [this.CSS.input, this.CSS.sourceLink], { contentEditable: !this.readOnly })
     }, this.nodes.caption.dataset.placeholder = this.config.captionPlaceholder, this.nodes.alt.dataset.placeholder = this.config.altPlaceholder, this.nodes.link.dataset.placeholder = this.config.linkPlaceholder, this.nodes.controls.hidden = this.readOnly, this.nodes.imageDimensions.hidden = !0, this.nodes.imageContainer.append(
       this.nodes.imagePreloader,
       this.nodes.controls,
@@ -81,7 +81,7 @@ class B {
     (i = this.nodes.imageEl) == null || i.remove();
     const o = /\.mp4$/.test(e) ? "VIDEO" : "IMG", a = {};
     let s = "load";
-    o === "VIDEO" && (a.autoplay = !0, a.loop = !0, a.muted = !0, a.playsinline = !0, s = "loadeddata"), this.nodes.imageEl = _(o, this.CSS.imageEl, a), this.nodes.imageEl.addEventListener(s, () => {
+    o === "VIDEO" && (a.autoplay = !0, a.loop = !0, a.muted = !0, a.playsinline = !0, s = "loadeddata"), this.nodes.imageEl = E(o, this.CSS.imageEl, a), this.nodes.imageEl.addEventListener(s, () => {
       this.toggleStatus(
         "filled"
         /* Filled */
@@ -98,7 +98,7 @@ class B {
     this.nodes.alt.innerHTML = e;
   }
   createFileButton() {
-    const e = _("div", [this.CSS.button]);
+    const e = E("div", [this.CSS.button]);
     return e.innerHTML = this.config.buttonContent || `${O} ${this.api.i18n.t("Select an Image")}`, e.addEventListener("click", () => this.onSelectFile()), e;
   }
   setImageDimensions(e, o) {
@@ -257,15 +257,15 @@ var L = { exports: {} };
             var v = Array.prototype.slice.call(r);
             if (v.length === 0) return d([]);
             var g = v.length;
-            function p(S, E) {
+            function p(S, _) {
               try {
-                if (E && (typeof E == "object" || typeof E == "function")) {
-                  var T = E.then;
-                  if (typeof T == "function") return void T.call(E, function(F) {
+                if (_ && (typeof _ == "object" || typeof _ == "function")) {
+                  var T = _.then;
+                  if (typeof T == "function") return void T.call(_, function(F) {
                     p(S, F);
                   }, c);
                 }
-                v[S] = E, --g == 0 && d(v);
+                v[S] = _, --g == 0 && d(v);
               } catch (F) {
                 c(F);
               }
@@ -471,8 +471,8 @@ var L = { exports: {} };
             }, c.setImmediate = function(p) {
               typeof p != "function" && (p = new Function("" + p));
               for (var k = new Array(arguments.length - 1), S = 0; S < k.length; S++) k[S] = arguments[S + 1];
-              var E = { callback: p, args: k };
-              return t[b] = E, l(b), b++;
+              var _ = { callback: p, args: k };
+              return t[b] = _, l(b), b++;
             }, c.clearImmediate = v;
           }
           function v(p) {
@@ -486,22 +486,22 @@ var L = { exports: {} };
                 r = !0;
                 try {
                   (function(S) {
-                    var E = S.callback, T = S.args;
+                    var _ = S.callback, T = S.args;
                     switch (T.length) {
                       case 0:
-                        E();
+                        _();
                         break;
                       case 1:
-                        E(T[0]);
+                        _(T[0]);
                         break;
                       case 2:
-                        E(T[0], T[1]);
+                        _(T[0], T[1]);
                         break;
                       case 3:
-                        E(T[0], T[1], T[2]);
+                        _(T[0], T[1], T[2]);
                         break;
                       default:
-                        E.apply(m, T);
+                        _.apply(m, T);
                     }
                   })(k);
                 } finally {
@@ -1092,7 +1092,11 @@ class P {
    * @returns {void}
    */
   onUpload(e) {
-    e.success && e.file ? this.image = e.file : this.uploadingFailed("incorrect response: " + JSON.stringify(e));
+    if (e.success && e.file) {
+      const o = { ...e.file };
+      delete o.rights_evidence, this.image = o;
+    } else
+      this.uploadingFailed("incorrect response: " + JSON.stringify(e));
   }
   /**
    * Handle uploader errors
